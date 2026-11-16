@@ -1,6 +1,7 @@
 package Services;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class DataBaseInitializer {
@@ -14,10 +15,27 @@ public class DataBaseInitializer {
         try {
             Statement st = conexion.createStatement();
 
-            System.out.println("--- Eliminando tablas si existen ---");
-            borrarTablas(st);
+            // 1. Verificamos si la tabla MOZOS ya existe
+            boolean tablasExisten = false;
+            try {
+                // Intentamos hacer una consulta rápida a la tabla
+                ResultSet rs = st.executeQuery("SELECT 1 FROM MOZOS WHERE ROWNUM = 1");
+                rs.close();
+                tablasExisten = true;
+            } catch (Exception e) {
+                // Si entra aquí, significa que la tabla NO existe (Error ORA-00942)
+                tablasExisten = false;
+            }
 
-            System.out.println("--- Creando tablas de la POLLERÍA ---");
+            if (tablasExisten) {
+                System.out.println("--- Las tablas ya existen. No se modificó la base de datos. ---");
+                st.close();
+                conexion.close();
+                return; // Salimos del método para conservar los datos
+            }
+
+            // 2. Si no existen, procedemos a crearlas
+            System.out.println("--- Primera ejecución detectada. Creando tablas ---");
 
             // 1. MOZOS
             st.execute("CREATE TABLE MOZOS (" +
@@ -98,6 +116,23 @@ public class DataBaseInitializer {
 
         } catch (Exception e) {
             System.out.println("Error al crear las tablas");
+            e.printStackTrace();
+        }
+    }
+
+    // --- MÉTODO TEMPORAL PARA BORRAR TABLAS MANUALMENTE ---
+    // Ejecuta este método desde el Main si necesitas reiniciar la base de datos.
+    public static void reiniciarBaseDeDatos() {
+        Connection conexion = DataBaseConnector.conectar();
+        if (conexion == null) return;
+        try {
+            Statement st = conexion.createStatement();
+            System.out.println("--- Eliminando tablas (Reinicio manual) ---");
+            borrarTablas(st);
+            st.close();
+            conexion.close();
+            System.out.println("--- Base de datos limpia. Vuelve a ejecutar el sistema. ---");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

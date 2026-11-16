@@ -8,9 +8,9 @@ public class MenuView extends JFrame {
     public MenuView() {
         // Configuración básica de la ventana principal
         setTitle("Sistema de Servicio - Pollería");
-        setSize(400, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cierra toda la aplicación
-        setLocationRelativeTo(null); // Centra en la pantalla
+        setSize(450, 600); // Lo hice un poquito más alto para que quepan los 7 botones
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // --- ENCABEZADO ---
@@ -21,7 +21,8 @@ public class MenuView extends JFrame {
 
         // --- PANEL DE BOTONES ---
         JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new GridLayout(6, 1, 10, 10)); // 6 filas, 1 columna
+        // OJO: Ahora es GridLayout de 7 filas, 1 columna
+        panelBotones.setLayout(new GridLayout(7, 1, 10, 10));
         panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 40, 20, 40));
 
         JButton btnMozos = new JButton("Gestión de Mozos");
@@ -29,6 +30,7 @@ public class MenuView extends JFrame {
         JButton btnClientes = new JButton("Gestión de Clientes");
         JButton btnProductos = new JButton("Gestión de Productos");
         JButton btnPedidos = new JButton("Tomar / Registrar Pedido");
+        JButton btnHistorial = new JButton("Historial y Cobro de Pedidos"); // NUEVO BOTÓN
         JButton btnSalir = new JButton("Salir del Sistema");
 
         panelBotones.add(btnMozos);
@@ -36,6 +38,7 @@ public class MenuView extends JFrame {
         panelBotones.add(btnClientes);
         panelBotones.add(btnProductos);
         panelBotones.add(btnPedidos);
+        panelBotones.add(btnHistorial); // Agregado al panel
         panelBotones.add(btnSalir);
 
         add(panelBotones, BorderLayout.CENTER);
@@ -43,29 +46,22 @@ public class MenuView extends JFrame {
         // --- EVENTOS DE LOS BOTONES ---
 
         // Abrir Mozos
-        btnMozos.addActionListener(e -> {
-            new MozoView().setVisible(true);
-        });
+        btnMozos.addActionListener(e -> new MozoView().setVisible(true));
 
         // Abrir Mesas
-        btnMesas.addActionListener(e -> {
-            new MesaView().setVisible(true);
-        });
+        btnMesas.addActionListener(e -> new MesaView().setVisible(true));
 
         // Abrir Clientes
-        btnClientes.addActionListener(e -> {
-            new ClienteView().setVisible(true);
-        });
+        btnClientes.addActionListener(e -> new ClienteView().setVisible(true));
 
         // Abrir Productos
-        btnProductos.addActionListener(e -> {
-            new ProductoView().setVisible(true);
-        });
+        btnProductos.addActionListener(e -> new ProductoView().setVisible(true));
 
-        // Abrir Pedidos (Lo haremos en el siguiente paso)
-        btnPedidos.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Módulo de Pedidos en construcción. ¡Ya casi!");
-        });
+        // Abrir Pedidos (Mozo)
+        btnPedidos.addActionListener(e -> new PedidoView().setVisible(true));
+
+        // Abrir Historial de Pedidos (Caja/Admin)
+        btnHistorial.addActionListener(e -> new PedidoListadoView().setVisible(true));
 
         // Salir
         btnSalir.addActionListener(e -> {
